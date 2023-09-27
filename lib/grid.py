@@ -29,7 +29,7 @@ t_p_step = ncp.linspace(tinit,tfinal,Np+1)          # Energies and other paramet
 # ----------------------------- Grid variables ----------------------------- #
 
 if dim == 2:
-    Lx = A                                          # Length of box in x-direction
+    Lx = A*Lz                                       # Length of box in x-direction
 
     dx = Lx/Nx                                      # Length between two consecutive grid points in x-direction
     dz = Lz/Nz                                      # Length between two consecutive grid points in z-direction         
