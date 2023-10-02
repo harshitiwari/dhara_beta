@@ -1,9 +1,8 @@
 # dhara_beta
 ## Beta version of DHARA Compressible Flow Solver
 
-- This is a sequential Python code which solves fully compressible equations for polytropic fluid in Cartesian box. 
+- This is a sequential Python code which solves fully compressible equations for polytropic fluid in 2D Cartesian box. 
 - This is GPU enabled. 
-- Currently, I have implemented it for 1D and 2D.
 
 ### Steps to run the code:
 1. Go to `para.py` file for changing the parameters. 
