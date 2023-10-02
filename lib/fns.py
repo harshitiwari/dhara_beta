@@ -13,61 +13,25 @@ import para
 
 def update_primitive():
     # Update the primitive variables using Q's
+    cs.rho = copy(cs.Q[0])
+    imposeBC_rho()
 
-    if para.dim == 2:
-        cs.rho = copy(cs.Q[0])
-        imposeBC_rho()
-
-        cs.ux = cs.Q[1]/cs.rho
-        cs.uz = cs.Q[2]/cs.rho
-        imposeBC_u()
-        pass
-
-    elif para.dim == 1:
-        cs.rho = copy(cs.Q[0])
-        imposeBC_rho()
-
-        cs.uz = cs.Q[1]/cs.rho
-        imposeBC_u()
-        pass
-
-    pass
-
-def CFL_condition():
-    if para.dim == 2:
-        dt_C = 0.5/ncp.max(ncp.abs(cs.ux)/grid.dx + ncp.abs(cs.uz)/grid.dz)
-        pass
-    elif para.dim == 1:
-        dt_C = 0.5/ncp.max(ncp.abs(cs.uz)/grid.dz)
-        pass
-    grid.dt_c = min(para.dt,dt_C)
+    cs.ux = cs.Q[1]/cs.rho
+    cs.uz = cs.Q[2]/cs.rho
+    imposeBC_u()
     pass
 
 def time_advance_single_step(dt):
     # Q for single time step dt
+    cs.compute_convective_flux_x()
+    cs.flux_derivative_x()
 
-    if para.dim == 2:
-        cs.compute_convective_flux_x()
-        # cs.compute_viscous_flux_x()
-        cs.flux_derivative_x()
+    cs.Q -= dt*(cs.F)
 
-        cs.Q -= dt*(cs.F)
+    cs.compute_convective_flux_z()
+    cs.flux_derivative_z()
 
-        cs.compute_convective_flux_z()
-        # cs.compute_viscous_flux_z()
-        cs.flux_derivative_z()
-
-        cs.Q -= dt*(cs.F)
-        pass
-    
-    elif para.dim == 1:
-        cs.compute_convective_flux_z()
-        # cs.compute_viscous_flux_z()
-        cs.flux_derivative_z()
-
-        cs.Q += -dt*(cs.F)
-        pass
-
+    cs.Q -= dt*(cs.F)
     pass
 
 def time_advance_euler():
@@ -86,17 +50,10 @@ def time_advance_euler():
             k=k+1
             pass
         
-        CFL_condition()
-
         cs.update_conserved()
-        time_advance_single_step(grid.dt_c)
+        time_advance_single_step(para.dt)
         update_primitive()
 
-        t = t+grid.dt_c
-
-        if t >= (para.t_far):
-            para.dt = para.dt_far
-            pass
-
+        t = t+para.dt
         pass
     pass
